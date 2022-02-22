@@ -29,7 +29,14 @@ const Post: NextPage<Props> = ({ post }) => {
   } = useForm<IFormInput>();
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    console.log(data);
+    await fetch('/api/createComment', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }).then(() => {
+      setSubmitted(true);
+    }).catch(() => {
+      setSubmitted(false);
+    })
   }
   
   return (
@@ -146,6 +153,19 @@ const Post: NextPage<Props> = ({ post }) => {
           </button>
         </form>
       )}
+
+      <div className="flex flex-col max-w-2xl p-10 my-10 mx-auto shadow shadow-yellow-500 space-y-2">
+        <h3 className="text-4xl">Comments</h3>
+        <hr className="pb-2"/>
+        {post.comments.map((comment) => (
+          <div key={comment._id}>
+            <p>
+              <span className="text-yellow-500">{comment.name}:{" "}</span>
+              {comment.comment}
+            </p>
+          </div>
+        ))}
+      </div>
 
     </main>
   );
